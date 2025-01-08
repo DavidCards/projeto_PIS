@@ -1,3 +1,4 @@
+//módulo pg (node-postgres) no Node.js
 const { Pool } = require('pg');
 const pool = new Pool({
   user: 'usuario',
