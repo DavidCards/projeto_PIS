@@ -1,17 +1,33 @@
-//Este código implementa uma rota de API em Node.js usando o Express,
-// que interage com uma base de dados através de um objeto pool do PostgreSQL.
 const express = require('express');
+const db = require('../models/baseDados');
 const router = express.Router();
-const pool = require('../models/baseDados');
 
-router.get('/categorias', async (req, res) => {  //Define uma rota HTTP do tipo GET para o endpoint /categorias.
-  try {
-    const result = await pool.query('SELECT * FROM categorias');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Erro no servidor');
-  }
+// Listar todas as categorias
+router.get('/', (req, res) => {
+  const query = 'SELECT * FROM categorias';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Erro ao buscar categorias:', err);
+      res.status(500).send('Erro no servidor.');
+      return;
+    }
+    res.json(results);
+  });
+});
+
+// Criar uma nova categoria
+router.post('/', (req, res) => {
+  const { nome } = req.body;
+  const query = 'INSERT INTO categorias (nome) VALUES (?)';
+
+  db.query(query, [nome], (err) => {
+    if (err) {
+      console.error('Erro ao adicionar categoria:', err);
+      res.status(500).send('Erro no servidor.');
+      return;
+    }
+    res.status(201).send('Categoria criada com sucesso!');
+  });
 });
 
 module.exports = router;

@@ -32,3 +32,20 @@ const mobileNavBar = new MobileNavBar(
 );
 
 mobileNavBar.init();
+
+const categoriasList = document.getElementById('categorias-list');
+
+// Buscar categorias do backend
+async function fetchCategorias() {
+  const response = await fetch('/api/categorias');
+  const categorias = await response.json();
+  categoriasList.innerHTML = '';
+  categorias.forEach(categoria => {
+    const li = document.createElement('li');
+    li.textContent = categoria.nome;
+    categoriasList.appendChild(li);
+  });
+}
+
+// Inicializar
+fetchCategorias();
